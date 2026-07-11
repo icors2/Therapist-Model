@@ -75,6 +75,8 @@ def convert_empathetic(
     for i, example in enumerate(ds):
         if i >= max_rows:
             break
+        if i > 0 and i % 1000 == 0:
+            print(f"  Empathetic: processed {i}/{max_rows}...", flush=True)
         user = (example.get("input") or "").strip()
         assistant = (example.get("label") or "").strip()
         if not user or not assistant:
@@ -103,7 +105,9 @@ def convert_graph2counsel(
     rows: list[dict[str, str]] = []
     kept = dropped_crisis = dropped_empty = 0
 
-    for example in ds:
+    for session_idx, example in enumerate(ds):
+        if session_idx > 0 and session_idx % 100 == 0:
+            print(f"  Graph2Counsel: session {session_idx}/{len(ds)}...", flush=True)
         dialog = example.get("dialog") or []
         for turn_idx, turn in enumerate(dialog):
             speaker = (turn.get("speaker") or "").lower()
@@ -156,8 +160,14 @@ def convert_articles(
     metadata = load_dataset("psychologie-et-serenite/articles-metadata", split="train")
     rows: list[dict[str, str]] = []
     kept = dropped_empty = dropped_crisis = fetch_errors = 0
+    total = len(metadata)
 
-    for example in metadata:
+    for article_idx, example in enumerate(metadata):
+        if article_idx > 0 and article_idx % 50 == 0:
+            print(
+                f"  Articles: {article_idx}/{total} fetched, {kept} kept...",
+                flush=True,
+            )
         slug = (example.get("slug_en") or example.get("slug_fr") or "").strip()
         title = (example.get("title_en") or example.get("title_fr") or "Psychology topic").strip()
         theme = (example.get("theme_en") or example.get("theme_fr") or "general").strip()
