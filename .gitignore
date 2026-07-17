@@ -1,0 +1,8 @@
+# Generated dataset artifacts (produced by scripts/prepare_datasets.py)
+/data/processed/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
